@@ -81,6 +81,7 @@ elseif length(ARGS) >= 1 && ARGS[1] == "emergency"
       write(clientConfig, "ifconfig-push $ipAddress $ipAddress")
       close(clientConfig)
     end
+    close(clients)
   end
   try
     cfg = open("ovpn_staticIP_giver.cfg", "r")
@@ -90,13 +91,67 @@ elseif length(ARGS) >= 1 && ARGS[1] == "emergency"
   catch
     emergeClients()
   end
-elseif length(ARGS) >= 1 && ARGS[1] == "add"
-  #TODO add entry and log static IP address to "static_IPs.cfg"
-#  function checkDup()
+elseif length(ARGS) == 2 && ARGS[1] == "add"
+  #global clientConfigDir = "/var/etc/openvpn/ccd"
+  global clientConfigDir = "/home/akito/src/julia-serving-hookers/tmp1"
+  clients = open("$clientConfigDir/clients.cfg", "r+")
+  commonName = ARGS[2]
+  originalIpAddressArray = [10, 148, 0, 14]
+  ipAddressArray = originalIpAddressArray
+  newIpAddressArray = originalIpAddressArray
+  clientConfig = open("$clientConfigDir/$commonName", "w+")
+  function checkDup()
+    position = 4
+    ipArc = 0
+    function counter(position, tempIpAddressArray)
+      ipArc = tempIpAddressArray[position]
+      if ipArc == ipAddressArray[position] && ipArc <= 255
+        tempIpAddressArray[position] = ipArc += 1
+      end
+      return tempIpAddressArray
+    end
+    for line in eachline(clients)
+      ## Reads a config called "clients.cfg" which location
+      ## is either specified in "ovpn_staticIP_giver.cfg"
+      ## or defaults to "/var/etc/openvpn/ccd".
+      ##
+      ## Iterates through the whole list of client/IP
+      ## pairs and generates their respective configs
+      ## to re-enable their static IPs.
+      global newIpAddressArray
+      lineArray = split(line, " ")
+      cn = lineArray[1]
+      ipAddress = lineArray[2]
+      ipAddressArray = parse.(Int64, split(ipAddress, "."))
+      if ipAddressArray == ""
+        println("empty line")
+      elseif commonName == cn
+        println("Client already exists. Exiting.")
+        exit(1)
+      elseif newIpAddressArray == ipAddressArray
+        global newIpAddressArray = counter(position, newIpAddressArray)
+        continue
+      end
+    end
+    firstByte = newIpAddressArray[1]
+    secondByte = newIpAddressArray[2]
+    thirdByte = newIpAddressArray[3]
+    fourthByte = newIpAddressArray[4]
+    ipAddressArray = "$firstByte.$secondByte.$thirdByte.$fourthByte"
+    write(clientConfig, "ifconfig-push $ipAddressArray $ipAddressArray\n")
+    println("Assigned $ipAddressArray to $commonName !")
+    write(clients, "$commonName $ipAddressArray\n")
+    println("Added $commonName to $clientConfigDir/$commonName !")
+    close(clientConfig)
+    close(clients)
+  end
+  checkDup()
 elseif length(ARGS) >= 1 && ARGS[1] == "remove"
   #TODO remove entry from "static_IPs.cfg" and free the static IP address
+  println("Not implemented yet.")
 elseif length(ARGS) >= 1 && ARGS[1] == "help"
   #TODO print usage help
+  println("Not implemented yet.")
 elseif length(ARGS) == 0
   #TODO print usage help
   println("No arguments provided.")
