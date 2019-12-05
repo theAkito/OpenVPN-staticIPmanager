@@ -92,8 +92,7 @@ elseif length(ARGS) >= 1 && ARGS[1] == "emergency"
     emergeClients()
   end
 elseif length(ARGS) == 2 && ARGS[1] == "add"
-  #global clientConfigDir = "/var/etc/openvpn/ccd"
-  global clientConfigDir = "/home/akito/src/julia-serving-hookers/tmp1"
+  global clientConfigDir = "/var/etc/openvpn/ccd"
   clients = open("$clientConfigDir/clients.cfg", "r+")
   commonName = ARGS[2]
   originalIpAddressArray = [10, 148, 0, 14]
