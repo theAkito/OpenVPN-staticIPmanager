@@ -4,6 +4,8 @@
 
 using Dates
 
+let clientConfigDir::String end
+
 if length(ARGS) >= 1 && ARGS[1] == "init"
   ## Creates configuration file.
   ## Backs up old cfg and/or creates new and empty one.
@@ -30,6 +32,7 @@ if length(ARGS) >= 1 && ARGS[1] == "init"
     end
   else
     println("Request denied. Exiting.")
+    exit(1)
   end
 elseif length(ARGS) >= 1 && ARGS[1] == "emergency"
   ## Pray to Satan for this to never be necessary.
@@ -50,9 +53,18 @@ elseif length(ARGS) >= 1 && ARGS[1] == "emergency"
   ##
   ## Once done, run:
   ## ./ovpn_staticIP_giver.jl emergency
-  #clientConfigDir = "/var/etc/openvpn/ccd"
-  clientConfigDir = "/home/akito/src/julia-serving-hookers/tmp"
+  global clientConfigDir = "/var/etc/openvpn/ccd"
   function emergeClients()
+    println("Run emergency mode?!")
+    println("If client-config files exist, they will be overwritten!")
+    print("Enter YES if you agree: ")
+    agreement = readline(stdin)
+    if agreement == "YES"
+      println("Starting recovery...")
+    else
+      println("Request denied. Exiting.")
+      exit(1)
+    end
     clients = open("$clientConfigDir/clients.cfg")
     for line in eachline(clients)
       ## Reads a config called "clients.cfg" which location
@@ -80,6 +92,7 @@ elseif length(ARGS) >= 1 && ARGS[1] == "emergency"
   end
 elseif length(ARGS) >= 1 && ARGS[1] == "add"
   #TODO add entry and log static IP address to "static_IPs.cfg"
+#  function checkDup()
 elseif length(ARGS) >= 1 && ARGS[1] == "remove"
   #TODO remove entry from "static_IPs.cfg" and free the static IP address
 elseif length(ARGS) >= 1 && ARGS[1] == "help"
