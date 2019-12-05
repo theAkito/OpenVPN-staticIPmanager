@@ -52,7 +52,7 @@ elseif length(ARGS) >= 1 && ARGS[1] == "emergency"
   ## ./ovpn_staticIP_giver.jl emergency
   #clientConfigDir = "/var/etc/openvpn/ccd"
   clientConfigDir = "/home/akito/src/julia-serving-hookers/tmp"
-  function iterClients()
+  function emergeClients()
     clients = open("$clientConfigDir/clients.cfg")
     for line in eachline(clients)
       ## Reads a config called "clients.cfg" which location
@@ -74,10 +74,17 @@ elseif length(ARGS) >= 1 && ARGS[1] == "emergency"
     cfg = open("ovpn_staticIP_giver.cfg", "r")
     global clientConfigDir = readline(cfg)
     close(cfg)
-    iterClients()
+    emergeClients()
   catch
-    iterClients()
+    emergeClients()
   end
+elseif length(ARGS) >= 1 && ARGS[1] == "add"
+  #TODO add entry and log static IP address to "static_IPs.cfg"
+elseif length(ARGS) >= 1 && ARGS[1] == "remove"
+  #TODO remove entry from "static_IPs.cfg" and free the static IP address
+elseif length(ARGS) >= 1 && ARGS[1] == "help"
+  #TODO print usage help
 elseif length(ARGS) == 0
-  println("placeholder")
+  #TODO print usage help
+  println("No arguments provided.")
 end
