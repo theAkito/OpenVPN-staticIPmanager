@@ -50,24 +50,33 @@ elseif length(ARGS) >= 1 && ARGS[1] == "emergency"
   ##
   ## Once done, run:
   ## ./ovpn_staticIP_giver.jl emergency
+  #clientConfigDir = "/var/etc/openvpn/ccd"
+  clientConfigDir = "/home/akito/src/julia-serving-hookers/tmp"
   function iterClients()
-    clientConfigDir = clientConfigDir
-    clients = open("$clientConfigDirclients.cfg")
+    clients = open("$clientConfigDir/clients.cfg")
     for line in eachline(clients)
-      #TODO
-      # read common-name
-      # split by space
-      # read IP
-      # write single config file
+      ## Reads a config called "clients.cfg" which location
+      ## is either specified in "ovpn_staticIP_giver.cfg"
+      ## or defaults to "/var/etc/openvpn/ccd".
+      ##
+      ## Iterates through the whole list of client/IP
+      ## pairs and generates their respective configs
+      ## to re-enable their static IPs.
+      lineArray = split(line, " ")
+      commonName = lineArray[1]
+      ipAddress = lineArray[2]
+      clientConfig = open("$clientConfigDir/$commonName", "w")
+      write(clientConfig, "ifconfig-push $ipAddress $ipAddress")
+      close(clientConfig)
     end
   end
   try
     cfg = open("ovpn_staticIP_giver.cfg", "r")
-    clientConfigDir = readline(cfg)
+    global clientConfigDir = readline(cfg)
     close(cfg)
-    
+    iterClients()
   catch
-    clientConfigDir = "/var/etc/openvpn/ccd"
+    iterClients()
   end
 elseif length(ARGS) == 0
   println("placeholder")

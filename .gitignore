@@ -49,3 +49,10 @@ $RECYCLE.BIN/
 .*.kate-swp
 .swp.*
 
+# ---> Project-specific
+static_IPs.cfg
+static_IPs.cfg.*
+ovpn_staticIP_giver.cfg
+clients.cfg
+tmp/
+tmp*/
