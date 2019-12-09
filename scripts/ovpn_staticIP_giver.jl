@@ -8,9 +8,9 @@ let clientConfigDir::String,                ## client-config-dir set in OpenVPN 
     originalIpAddressArray::Array{Int64, 4} ## Starting point in IP address iteration.
 end
 
-#clientConfigDir = "/var/etc/openvpn/ccd"
+clientConfigDir = "/var/etc/openvpn/ccd"
 # Debugging
-clientConfigDir = "/home/akito/src/julia-serving-hookers/tmp"
+#clientConfigDir = "/home/akito/src/julia-serving-hookers/tmp"
 
 if length(ARGS) >= 1 && ARGS[1] == "init"
   ## Creates configuration file.
@@ -24,8 +24,8 @@ if length(ARGS) >= 1 && ARGS[1] == "init"
   agreement = readline(stdin)
   if agreement == "YES"
     cT = Dates.format(now(), "yyyymmddHHMMSS")
-    filename = "static_IPs.cfg"
-    bkfilename = "static_IPs.cfg.$cT"
+    filename = "$clientConfigDir/clients.cfg"
+    bkfilename = "$clientConfigDir/clients.cfg.$cT"
     try
       oldfile = open(filename, "r")
       newfile = open(bkfilename, "w")
@@ -100,7 +100,8 @@ elseif length(ARGS) >= 1 && ARGS[1] == "emergency"
 elseif length(ARGS) == 2 && ARGS[1] == "add"
   ## Adds client by common-name and automatically
   ## assigns an available static IP address
-  ## permanently to that client.
+  ## permanently to that client by adding an
+  ## entry to "clients.cfg".
   ##
   ###  Usage
   ## ./ovpn_staticIP_giver.jl add common-name
@@ -211,7 +212,7 @@ elseif length(ARGS) == 2 && ARGS[1] == "add"
   end
   assignIP()
 elseif length(ARGS) >= 1 && ARGS[1] == "remove"
-  #TODO remove entry from "static_IPs.cfg" and free the static IP address
+  #TODO remove entry from "clients.cfg" and free the static IP address
   println("Not implemented yet.")
 elseif length(ARGS) >= 1 && ARGS[1] == "help"
   #TODO print usage help
