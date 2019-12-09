@@ -7,7 +7,7 @@ curl -sSL https://julialang-s3.julialang.org/bin/freebsd/x64/1.3/julia-1.3.0-fre
 tar zxf julia-1.3.0-freebsd-x86_64.tar.gz && \
 rm julia-1.3.0-freebsd-x86_64.tar.gz && \
 ln -s /root/julia-1.3.0/bin/julia /usr/bin/julia && \
-mkdir /var/etc/openvpn/ccd && \
+mkdir /var/etc/openvpn/ccd >/dev/null 2>&1; \
 #touch /var/etc/openvpn/ccd/clients.cfg && \
 curl -sSL https://raw.githubusercontent.com/Akito13/julia-serving-hookers/master/ovpn_adduser.sh \
   -o /ovpn_adduser.sh && \
