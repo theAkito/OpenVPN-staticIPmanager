@@ -12,5 +12,6 @@ Finally, this shall be the back-end for an [OPNsense](https://opnsense.org/) fro
 * Add CIDR range to config file
 * Add option to remove IP assignment
 * Add help text
+* Add option to use Database instead of text file for extreme scalability
 * ~~Add IP assignment~~
 * ~~Add config-client-dir location to config file~~  
