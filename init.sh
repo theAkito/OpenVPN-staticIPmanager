@@ -9,9 +9,9 @@ rm julia-1.3.0-freebsd-x86_64.tar.gz && \
 ln -s /root/julia-1.3.0/bin/julia /usr/bin/julia && \
 mkdir /var/etc/openvpn/ccd >/dev/null 2>&1; \
 #touch /var/etc/openvpn/ccd/clients.cfg && \
-curl -sSL https://raw.githubusercontent.com/Akito13/julia-serving-hookers/master/ovpn_adduser.sh \
+curl -sSL https://raw.githubusercontent.com/Akito13/OpenVPN-staticIPmanager/master/ovpn_adduser.sh \
   -o /ovpn_adduser.sh && \
-curl -sSL https://raw.githubusercontent.com/Akito13/julia-serving-hookers/master/scripts/ovpn_staticIP_giver.jl \
+curl -sSL https://raw.githubusercontent.com/Akito13/OpenVPN-staticIPmanager/master/src/ovpn_staticIP_giver.jl \
   -o /var/etc/openvpn/ccd/ovpn_staticIP_giver.jl && \
 cd /var/etc/openvpn/ccd/ && \
 julia ovpn_staticIP_giver.jl init
